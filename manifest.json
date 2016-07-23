@@ -1,0 +1,25 @@
+{
+  "manifest_version": 2,
+
+  "name": "WikiPreview",
+  "description": "This extension shows a preview of a Wikipedia link so short descriptions can be read on hover.",
+  "version": "1.0",
+
+  "browser_action": {
+    "default_icon": "icon.png",
+    "default_popup": "popup.html",
+    "default_title": "WikiPreview"
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "css": ["core.css"],
+      "js": ["contentscript.js"]
+    }
+  ],
+  "permissions": [
+    "activeTab",
+    "webRequest",
+    "https://ajax.googleapis.com/"
+  ]
+}
