@@ -5,9 +5,7 @@
   "description": "This extension shows a preview of a Wikipedia link so short descriptions can be read on hover.",
 
   "permissions": [
-    "*://*.wikipedia.org/*",
-    "webRequest",
-    "webRequestBlocking"
+    "*://*.wikipedia.org/wiki/*"
   ],
   "content_scripts": [
     {
