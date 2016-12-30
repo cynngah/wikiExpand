@@ -1,5 +1,6 @@
 var link;
 var el;
+// keep track of each expanded button and un-expand it after
 
 chrome.extension.sendMessage({}, function(response) {
 	var readyStateCheckInterval = setInterval(function() {
@@ -20,7 +21,7 @@ chrome.extension.sendMessage({}, function(response) {
                   if (link && (link.match('.*wikipedia*', 'i'))) {
                       el = srcElement;
                       // call mouseover crap
-                      addExpansionButton(srcElement);
+                      addExpansionButton(srcElement, link);
                   }
               }
         });
@@ -33,17 +34,19 @@ chrome.extension.sendMessage({}, function(response) {
 *
 * @param element dom element to be modified/add javascript/css behavior to
 */
-function addExpansionButton(element) {
+function addExpansionButton(element, lnk) {
     // make button
     var expandButton = document.createElement('button');
     expandButton.className = 'expandButton';
+    console.log(expandButton);
+    expandButton.setAttribute('id', lnk);
     // put button after link
     expandButton.addEventListener('click', requestExpand, false);
     element.insertAdjacentElement('afterend', expandButton);
 }
 
 function requestExpand(element) {
-    xhrRequest();
+    xhrRequest(element);
     // STEPS!
     // 1. form query
     // 2. make request to wikipedia
@@ -54,9 +57,11 @@ function requestExpand(element) {
     // 7. append webview afterend to object
 }
 
-function xhrRequest() {
+function xhrRequest(e) {
     var xhr = new XMLHttpRequest();
-    var name = link.substring(link.lastIndexOf('/') + 1);
+    var urlLink = e.toElement.id;
+    var name = urlLink.substring(urlLink.lastIndexOf('/') + 1);
+
     var wikiReq = 'https://en.wikipedia.org/w/api.php?format=json&action=query&prop=extracts&exintro=&explaintext=&titles=';
     wikiReq += name.replace('_', '%20').replace('(', '%28').replace(')', '%29');
     xhr.open('GET', wikiReq, true);

@@ -12,6 +12,9 @@
       "matches": [
         "<all_urls>"
       ],
+      "exclude_matches": [
+        "*://*.wikipedia.org/wiki/*"
+      ],
       "css": [
         "src/inject/inject.css"
       ],
