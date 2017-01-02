@@ -1,5 +1,6 @@
 var link;
 var el;
+var currentEl;
 // keep track of each expanded button and un-expand it after
 
 chrome.extension.sendMessage({}, function(response) {
@@ -46,7 +47,11 @@ function addExpansionButton(element, lnk) {
 }
 
 function requestExpand(element) {
-    xhrRequest(element);
+    if (element.srcElement.className !== "expandButton expanded") {
+        xhrRequest(element);
+    } else {
+        removeElement(element);
+    }
     // STEPS!
     // 1. form query
     // 2. make request to wikipedia
@@ -57,9 +62,18 @@ function requestExpand(element) {
     // 7. append webview afterend to object
 }
 
+function removeElement(e) {
+    var pid = 'p' + e.srcElement.id;
+    var removed = document.getElementById(pid);
+    console.log('HELLO', removed);
+    removed.parentElement.removeChild(removed);
+}
+
 function xhrRequest(e) {
     var xhr = new XMLHttpRequest();
-    var urlLink = e.toElement.id;
+    currentEl = e;
+    var urlLink = e.srcElement.id;
+    e.srcElement.className += " expanded";
     var name = urlLink.substring(urlLink.lastIndexOf('/') + 1);
 
     var wikiReq = 'https://en.wikipedia.org/w/api.php?format=json&action=query&prop=extracts&exintro=&explaintext=&titles=';
@@ -77,6 +91,8 @@ function expandData(e) {
     var blurb = content[index].extract;
     var paragraph = document.createElement('p');
     paragraph.innerHTML = blurb;
+    console.log(e);
+    paragraph.setAttribute('id', 'p' + currentEl.srcElement.id);
     el.insertAdjacentElement('afterend', paragraph);
 }
 
